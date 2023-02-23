@@ -1,4 +1,3 @@
-
 const reminder_hyperlink_prefix = '[id]x-apple-reminderkit://REMCDReminder/'
 const reminder_hyperlink_reg_pattern = /\[id\]x\-apple\-reminderkit\:\/\/REMCDReminder\/[0-9A-F\-]+/
 
@@ -51,19 +50,18 @@ for (let event of events_created) {
     }
 }
 
-
 // [2] iterate all reminders, if the reminder is not in the set, then create a new event
 for (const reminder of reminders) {
     const reminder_hyperlink = reminder_hyperlink_prefix + reminder.identifier
     // find the event linked to the reminder
     const [targetEvent] = events.filter(e => e.notes != null && e.notes.includes(reminder_hyperlink))
-    //过滤重复提醒事项
+    // TODO FIX: filter out the repeated reminders --> this is the legacy code, as we need to support the recurring reminders
     if (!m_dict[reminder.calendar.title]) {
         console.warn("Cannot find the calendar linked to the reminder" + reminder.calendar.title)
         continue
     }
     if (targetEvent) {
-        //console.log('找到已创建的事项${reminder.title}')
+        //console.log('get the created ${reminder.title}')
         updateEvent(targetEvent, reminder)
     } else {
         console.warn(`import reminder【${reminder.title}】to calendar as an event 【${reminder.calendar.title}】`)
@@ -73,12 +71,10 @@ for (const reminder of reminders) {
         updateEvent(newEvent, reminder)
     }
 }
-
 Script.complete()
 
-/** function definitions **/
 
-// update event with reminder
+/* update event with reminder */
 function updateEvent(event, reminder) {
     event.title = `${reminder.title}`
     cal_name = reminder.calendar.title
@@ -105,11 +101,11 @@ function updateEvent(event, reminder) {
         period = period.toFixed(1)
         if (period < 0) {
             period = -period
-            event.location = "延期" + period + "天完成"
+            event.location = "Delay" + period + "day(s) finished."
         } else if (period == 0) {
-            event.location = "准时完成"
+            event.location = "On time finished."
         } else {
-            event.location = "提前" + period + "天完成"
+            event.location = "Finish" + period + "day(s) early."
         }
     }
     // [2] unfinished reminder
@@ -121,8 +117,7 @@ function updateEvent(event, reminder) {
         // [2.1] overdue reminder
         if (period < 0) {
             // delay the reminder
-            event.location = "延期" + (-period) + "天"
-            //如果不在同一天，设置为全天事项
+            event.location = "Delay" + (-period) + "day(s)"
             // not in the same day, set as all day event
             if (reminder.dueDate.getDate() != nowtime.getDate()) {
                 event.title = `❌${reminder.title}`
@@ -139,13 +134,13 @@ function updateEvent(event, reminder) {
                 ending.setHours(ending.getHours() + 1)
                 event.endDate = ending
             }
-            console.log(`待办【${reminder.title}】顺延${-period}天`)
+            console.log(`TODO【${reminder.title}】delay ${-period} day(s)`)
         }
         // [2.2] normal reminder
         else {
             event.title = `${reminder.title}`
             event.isAllDay = false
-            event.location = "还剩" + period + "天"
+            event.location = "remain" + period + "day(s)"
             event.startDate = reminder.dueDate
             var ending = new Date(reminder.dueDate)
             ending.setHours(ending.getHours()) + 1
@@ -158,3 +153,27 @@ function updateEvent(event, reminder) {
     event.save()
 }
 
+/** recurring reminders -> recurring events **/
+// Time: 8:00 - 9:00
+const time_block_reg_pattern = /(\d{1,2}):(\d{1,2})\s*-\s*(\d{1,2}):(\d{1,2})/
+
+function parseTimeBlock(time_block) {
+    const match = time_block.match(time_block_reg_pattern)
+    if (!match) {
+        return null
+    }
+    const [, startHour, startMinute, endHour, endMinute] = match
+    return {
+        startHour: parseInt(startHour),
+        startMinute: parseInt(startMinute),
+        endHour: parseInt(endHour),
+        endMinute: parseInt(endMinute)
+    }
+}
+
+// get all recurring reminders
+function getAllRecurringReminder() {
+    const reminders = Reminder.all()
+    const recurringReminders = reminders.filter(r => r.recurrenceRule != null)
+    return recurringReminders
+}
