@@ -16,7 +16,7 @@ I am using the following apps:
   - ✅: Completed
   - ⭕️: Due today
   - ❌: Overdue
-  - no icon: Not due yet
+  - ☑️: Not due yet
 
 ## More to come!
 - Create a new calendar event with a reminder and its note syntax
@@ -37,4 +37,17 @@ I am using the following apps:
 If you have any suggestions or questions, please let me know! I am open to any feedback and I am happy to help you out.
 You could simply open an issue or contact me via email.
 
-## Looking for volunteers to give feedback and help me test the script. If you are interested, please contact me. Thanks!
+### Looking for volunteers to give feedback and help me test the script. 
+If you are interested, please contact me @ my email or social media. Thanks!
+
+### References & Tutorials
+- [Scriptable](https://scriptable.app/)
+- [Apple Calendar](https://support.apple.com/en-us/HT202925)
+- [Apple Reminders](https://support.apple.com/en-us/HT205890)
+- [Apple Shortcuts](https://support.apple.com/en-us/HT208309)
+- [iOS日历提醒事项的时间修改](https://www.wolai.com/arlene/4gKVHbT55X8YAoPf1QiAox)
+- [谈谈我怎样使用Things3度过一天](https://sspai.com/post/39636)
+- [ios14apple日历增强](https://post.smzdm.com/p/alp6d9ke/)
+- [iOS14日历提醒事项的糅合](https://post.smzdm.com/p/adwnd7px/)
+- [最完美(ios)提醒事项与日历双向同步+带跳转](https://zhuanlan.zhihu.com/p/512921323)
+- [基于iOS快捷指令自动化](https://blog.csdn.net/m0_73906609/article/details/128885241)
