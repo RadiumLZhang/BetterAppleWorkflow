@@ -33,7 +33,7 @@ console.log(`# events = ${events.length}`)
 
 // create a set of reminders' identifier
 var reminders_id_set = new Set(reminders.map(e => e.identifier))
-//for(let i of reminders_id_set) console.log(i)
+//for(let i of reminders_id_set) console.log(i)zhaos
 
 // [1] iterate all events, if the event is created by this script, then delete the event if the reminder is not in the set
 events_created = events.filter(e => e.notes != null && e.notes.includes("[id]"))
