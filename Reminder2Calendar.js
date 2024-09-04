@@ -52,12 +52,19 @@ for (let event of events_created) {
 
 // [2] iterate all reminders, if the reminder is not in the set, then create a new event
 for (const reminder of reminders) {
+    console.log("reminder.calendar.title: " + reminder.calendar.title)
+    console.log("reminder.calendar.title.includes(\"‍❤️‍🔥\")" + reminder.calendar.title.includes("‍❤️‍🔥"))
+    console.log("reminder.calendar.title.normalize('NFC').includes(\"❤️‍🔥\".normalize('NFC'))" + reminder.calendar.title.normalize('NFC').includes("❤️‍🔥".normalize('NFC')))
     const reminder_hyperlink = reminder_hyperlink_prefix + reminder.identifier
     // find the event linked to the reminder
     const [targetEvent] = events.filter(e => e.notes != null && e.notes.includes(reminder_hyperlink))
     // TODO FIX: filter out the repeated reminders --> this is the legacy code, as we need to support the recurring reminders
     if (!m_dict[reminder.calendar.title]) {
         console.warn("Cannot find the calendar linked to the reminder" + reminder.calendar.title)
+        continue
+    }
+    else if(reminder.calendar.title.normalize('NFC').includes("❤️‍🔥".normalize('NFC'))){
+        console.warn("The calendar is a special calendar, skip the reminder" + reminder.title)
         continue
     }
     if (targetEvent) {
