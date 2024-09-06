@@ -121,7 +121,22 @@ async function syncRemindersWithEvents(calendar, reminderList) {
 
             // Update the event if the reminder is marked as completed
             if (reminder.isCompleted) {
-                event.notes = `Completed: ${new Date().toISOString()}`;
+                // use reminder due date and completed date to update the event
+                var period = (reminder.dueDate - reminder.completionDate) / 1000 / 60 / 60 / 24 // in days
+                if (period < 0) {
+                    period = period / 10;
+                }
+                period = period.toFixed(1);
+                if (period <= 0 && period > -1) {
+                    event.notes = 'On time finished.';
+                }
+                else if (period < -1) {
+                    event.notes = `Delay ${-period} day(s) finished.`;
+                }
+                else {
+                    event.notes = `Finish ${period} day(s) early.`;
+                }
+
                 event.title = `${icon} ${cleanEventTitle}`;
                 await event.save();
                 console.log(`Updated Event: ${event.title} as completed.`);
